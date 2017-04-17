@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <form action="#">
+          <div class="form-group">
+            <input type="text" name="code" id="code-field"/>
+          </div>
+          <div class="form-group">
+            <input type="button" value="Test" id="code">
+          </div>
+        </form>
+      </div>
+      <div class="row">
+          <button id="test">
+              Test btn
+          </button>
+      </div>
+      <div class="row">
+        <form action="#">
+          <div class="form-group">
+            <input type="text" name="code" id="txt-search"/>
+          </div>
+          <div class="form-group">
+            <input type="button" value="Test" id="search">
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+  <script src="node_modules/jquery/dist/jquery.min.js"></script>
+  <script>
+    // You can also require other files to run in this process
+    require('./renderer.js')
+  </script>
+</html>
