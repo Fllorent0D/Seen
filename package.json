@@ -20,8 +20,11 @@
   },
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "didyoumean2": "^1.3.0",
     "fast-levenshtein": "^2.0.6",
     "jquery": "^3.2.1",
+    "moment": "^2.18.1",
+    "nconf": "^0.8.4",
     "trakt.tv": "^5.0.1"
   }
 }
