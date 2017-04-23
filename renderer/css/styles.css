@@ -1,0 +1,14 @@
+a.nav-link{
+    display: inline-block;
+}
+/* workaround modal-open padding issue */
+body.modal-open {
+    padding-right:0 !important;
+    height: auto;
+}
+
+body{
+    padding-top: 58px;
+    background-color: #34495e;
+    color:#ffffff;
+}

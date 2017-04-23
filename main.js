@@ -42,7 +42,7 @@ function createWindow () {
     // and load the index.html of the app.
 
     mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, 'index.html'),
+        pathname: path.join(__dirname, '/renderer/index.html'),
         protocol: 'file:',
         slashes: true
     }));
@@ -130,7 +130,13 @@ ipc.on("file", (event, arg)=>{
         thresholdType: 'edit-distance',
         threshold: Infinity
     });
+
     console.log(`Trouvé : ${found} Saison ${sai} Episode ${ep}`);
+    console.log(event);
+    mainWindow.webContents.send("found", found, sai, ep);
+
+    return;
+
     let theShow;
     for(let i = 0; i < sync.length; i++)
     {
@@ -150,7 +156,7 @@ ipc.on("file", (event, arg)=>{
     }];
     trakt.sync.history.add({
         movies : null,
-        shows : theShow,
+        shows : [theShow],
         seasons: seasons,
         episodes: null
     }).then((result) => {
@@ -158,35 +164,6 @@ ipc.on("file", (event, arg)=>{
     }).catch((err) => {
         console.log(err);
     });
-
-    /*
-
-
-         {
-             "title": "Mad Men",
-             "year": 2007,
-             "ids": {
-                 "trakt": 4,
-                 "slug": "mad-men",
-                 "tvdb": 80337,
-                 "imdb": "tt0804503",
-                 "tmdb": 1104,
-                 "tvrage": 16356
-             },
-             "seasons": [{
-                 "number": 1,
-                 "episodes": [
-                 {
-                    "watched_at": "2014-09-01T09:10:11.000Z",
-                    "number": 1
-                 }
-                 ]
-             }]
-         }
-
-
-
-     */
 
 });
 
@@ -210,7 +187,7 @@ ipc.on("textSearch", (event, arg) => {
     cleanedTitle = cleanedTitle.replace(new RegExp("\\.+|-", 'g'), " ");
     console.log(cleanedTitle)
     */
-    /* V2 */
+    /* V2 Work way better */
 
     var regEx = new RegExp("S([0-9]{1,2})E([0-9]{1,2})", "i");
     var match = cleanedTitle.match(regEx);

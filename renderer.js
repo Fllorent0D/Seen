@@ -14,6 +14,29 @@ $("#search").click(() => {
     ipc.send("textSearch", $("#txt-search").val());
 
 });
+ipc.on("found", (event, found, sai, ep) => {
+    console.log(found);
+    console.log(sai);
+    console.log(ep);
+    $.each(found, (index, value) => {
+        let row = $("<tr>");
+        $("<td>", {
+            text : value
+        }).appendTo(row);
+        $("<td>", {
+            text : sai
+        }).appendTo(row);
+        $("<td>", {
+            text : ep
+        }).appendTo(row);
+        $("<td>").append($("<button>", {
+            text:"Ajouter à Trakt",
+            class:"btn btn-success add-to-trakt"
+        })).appendTo(row)
+
+        $("#found tbody").append(row);
+    });
+})
 
 const holder = document.getElementById('holder')
 holder.ondragover = () => {
