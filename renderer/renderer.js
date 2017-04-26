@@ -3,7 +3,14 @@
 // All of the Node.js APIs are available in this process.
 const ipc = require("electron").ipcRenderer;
 const $ = require("jquery");
-
+$.fn.extend({
+    animateCss: function (animationName) {
+        var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+        this.addClass('animated ' + animationName).one(animationEnd, function() {
+            $(this).removeClass('animated ' + animationName);
+        });
+    }
+});
 
 $("#code").click(() => {
     ipc.send("code", $("input#code-field").val());
@@ -55,4 +62,13 @@ holder.ondrop = (e) => {
     }
     return false;
 };
-$("nav")
+$("nav .nav-link").click((event, element)=>{
+    let activePage = $(".nav-link.active").attr("data-page");
+    console.log($(element))
+    $(".nav-link.active").removeClass("active");
+    let nextPage = $(this).attr("data-page");
+    $(this).addClass("active");
+    $(`#${activePage}`).animateCss("fadeInUp");
+    $(`#${activePage}`).animateCss("fadeOutUp");
+
+});
