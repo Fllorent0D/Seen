@@ -2,3 +2,7 @@
 node_modules/
 
 .idea/workspace.xml
+
+token.json
+
+.DS_Store

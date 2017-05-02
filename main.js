@@ -20,9 +20,9 @@ nconf.file({ file: path.join(__dirname, 'token.json') });
 let mainWindow, loginwindows
 
 function createWindow () {
-    mainWindow = new BrowserWindow({width:800, height:600, show:false, titleBarStyle: "hidden-inset"});
+    mainWindow = new BrowserWindow({width:800, height:600, maxWidth:992, show:false, titleBarStyle: "hidden-inset"});//
     mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, '/renderer/index.html'),
+        pathname: path.join(__dirname, '/renderer/index_mat.html'),
         protocol: 'file:',
         slashes: true
     }));
@@ -35,7 +35,7 @@ function createWindow () {
     if(typeof nconf.get('TOKEN') !== 'undefined'){
         trakt.import_token(nconf.get("TOKEN")).then(newTokens => {
             console.log(newTokens);
-            mainWindow.webContents.send("feedback", {title:"Already logged in",text: "so smart bitch", type:"info", timer:1000, showConfirmButton:false});
+            mainWindow.webContents.send("feedback", {text:"Already logged in"});
 
             // Contains token, refreshed if needed (store it back)
         });
@@ -64,7 +64,7 @@ ipc.on("code", (event, arg) => {
     trakt.exchange_code(arg).then(result => {
         nconf.set("TOKEN", trakt.export_token());
         nconf.save();
-        mainWindow.webContents.send("feedback", {title:"Login",text: "Connected to Trakt", type:"success", timer:1000, showConfirmButton:false});
+        mainWindow.webContents.send("feedback", {text: "Connected to Trakt"});
 
         loginwindows.destroy();
         setTimeout(() => {
@@ -73,7 +73,7 @@ ipc.on("code", (event, arg) => {
     });
 })
 let syncShows = () => {
-   mainWindow.webContents.send("feedback", {title:"Sync",text: "Show sync started", type:"info", timer:2000, showConfirmButton:false});
+   mainWindow.webContents.send("feedback", {text: "Show sync started"});
 
    trakt.sync.watched({
        type:"shows"
@@ -88,13 +88,13 @@ let syncShows = () => {
        nconf.set("SYNC", result);
        nconf.save();
        setTimeout(()=>{
-         mainWindow.webContents.send("feedback", {title:"Sync",text: "Show sync finished", type:"success", timer:1500, showConfirmButton:false});
+         mainWindow.webContents.send("feedback", {text: "Show sync finished"});
 
        }, 2000)
 
        //console.log(result);
    }).catch((error) => {
-      mainWindow.webContents.send("feedback", {title:"Sync",text: "Show sync failed", type:"error", timer:1500, showConfirmButton:false});
+      mainWindow.webContents.send("feedback", {text: "Show sync failed"});
 
        console.log(error)
    }).then(() => {
@@ -132,9 +132,9 @@ ipc.on("postToTrakt", (event, arg) => {
       seasons: seasons,
       episodes: null
   }).then((result) => {
-      event.sender.send("feedback",{title:"Post to trakt",text:"That was quick!",type:"success", timer:3000, showConfirmButton:false})
+      event.sender.send("feedback",{text: "Saved on trakt!"})
   }).catch((err) => {
-      event.sender.send("feedback",{title:"Failed to post", text:err.message, type:"error", timer:5000, showConfirmButton:false})
+      event.sender.send("feedback",{text:`Error : ${err.message}`})
   });
 });
 ipc.on("file", (event, arg)=>{

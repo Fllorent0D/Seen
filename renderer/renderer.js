@@ -15,11 +15,11 @@ $.fn.extend({
         });
     }
 });
-
 /* Alert feedback */
 ipc.on("feedback", (event, arg)=>{
   console.log(arg)
-  alerta(arg);
+  Materialize.toast(arg.text, 3000, 'rounded')
+  //alerta(arg);
 })
 /* LOGIN */
 $("#openLoginWindow").click(() => {
@@ -46,7 +46,7 @@ ipc.on("found", (event, found, sai, ep) => {
             text : ep
         }).appendTo(row);
         let button = $("<button>", {
-            text:"Ajouter à Trakt",
+            text:"Save on Trakt",
             class:"btn btn-success postToTrakt"
         });
 
@@ -56,8 +56,8 @@ ipc.on("found", (event, found, sai, ep) => {
           ipc.send("postToTrakt", {"show":tr.data("serie"), "saison":tr.data("saison"), "ep":tr.data("episode")})
         })
         $("<td>").append(button).appendTo(row)
-
-        $("#found tbody").append(row);
+        console.log($("#add-episode tbody"))
+        $("#add-episode tbody").append(row);
     });
 })
 /* POST to api */
@@ -80,20 +80,4 @@ holder.ondrop = (e) => {
     return false;
 };
 /* TABS */
-$("nav .nav-link").click((event)=>{
-    if($(event.target).hasClass("active")){
-      console.log("le meme")
-      return;
-
-    }
-    event.preventDefault();
-    let activePage = $("nav .nav-link.active").attr("data-page");
-    $(`#${activePage}`).animateCss("fadeOutUp", true);
-
-    console.log($("nav .nav-link.active"))
-    $("nav .nav-link.active").removeClass("active");
-    let nextPage = $(event.target).attr("data-page");
-    $(event.target).addClass("active");
-    $(`#${nextPage}`).animateCss("fadeInUp", false);
-
-});
+$("ul.tabs").tabs();
