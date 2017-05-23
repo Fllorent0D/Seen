@@ -117,21 +117,21 @@ ipc.on("postToTrakt", (event, arg) => {
       }
   }
 
-  console.log(theShow);
   let seasons = [{
-      "number": saison,
+      "number": parseInt(saison),
       "episodes":[{
           "number": ep,
-          "watched_at": "released"
       }]
   }];
+  theShow["seasons"] = seasons
+  console.log(JSON.stringify(theShow));
 
   trakt.sync.history.add({
-      movies : null,
-      shows : [theShow],
-      seasons: seasons,
-      episodes: null
+      episodes : [],
+      movies: [],
+      shows : [theShow]
   }).then((result) => {
+      console.log(result)
       event.sender.send("feedback",{text: "Saved on trakt!"})
   }).catch((err) => {
       event.sender.send("feedback",{text:`Error : ${err.message}`})
