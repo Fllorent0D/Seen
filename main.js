@@ -73,7 +73,7 @@ ipc.on("code", (event, arg) => {
     });
 })
 let syncShows = () => {
-   mainWindow.webContents.send("feedback", {text: "Show sync started"});
+   mainWindow.webContents.send("feedback", {text: "Show sync started..."});
 
    trakt.sync.watched({
        type:"shows"
@@ -125,6 +125,7 @@ ipc.on("postToTrakt", (event, arg) => {
           "watched_at": "released"
       }]
   }];
+  mainWindow.webContents.send("feedback", {text: "Sending to Trakt..."});
 
   trakt.sync.history.add({
       movies : null,
@@ -132,7 +133,7 @@ ipc.on("postToTrakt", (event, arg) => {
       seasons: seasons,
       episodes: null
   }).then((result) => {
-      event.sender.send("feedback",{text: "Saved on trakt!"})
+      event.sender.send("feedback",{text: "Saved on Trakt!"})
   }).catch((err) => {
       event.sender.send("feedback",{text:`Error : ${err.message}`})
   });
@@ -140,23 +141,29 @@ ipc.on("postToTrakt", (event, arg) => {
 ipc.on("file", (event, arg)=>{
     let shows = nconf.get("SHOWS");
     let sync = nconf.get("SYNC");
-    let cleanedTitle = path.basename(arg);
-    var regEx = new RegExp("S([0-9]{1,2})E([0-9]{1,2})", "i");
-    var match = cleanedTitle.match(regEx);
-    let sai = match[1];
-    let ep = match[2];
-    cleanedTitle = cleanedTitle.substring(0, match.index);
-    cleanedTitle = cleanedTitle.replace(new RegExp("((\\.|-|\\s)^)", 'g'), "");
+    try {
+      let cleanedTitle = path.basename(arg);
+      var regEx = new RegExp("S([0-9]{1,2})E([0-9]{1,2})", "i");
+      var match = cleanedTitle.match(regEx);
+      let sai = match[1];
+      let ep = match[2];
+      cleanedTitle = cleanedTitle.substring(0, match.index);
+      cleanedTitle = cleanedTitle.replace(new RegExp("((\\.|-|\\s)^)", 'g'), "");
 
-    let found = didYouMean(cleanedTitle, shows, {
-        returnType: 'all-closest-matches',
-        trimSpace: false,
-        thresholdType: 'edit-distance',
-        threshold: Infinity
-    });
+      let found = didYouMean(cleanedTitle, shows, {
+          returnType: 'all-closest-matches',
+          trimSpace: false,
+          thresholdType: 'edit-distance',
+          threshold: Infinity
+      });
+      mainWindow.webContents.send("found", found, sai, ep);
 
-    console.log(`Trouvé : ${found} Saison ${sai} Episode ${ep}`);
-    mainWindow.webContents.send("found", found, sai, ep);
+    } catch (e) {
+      event.sender.send("feedback",{text:`Unable to find any show`})
+
+    } finally {
+
+    }
 
 });
 ipc.on("openLoginWindow", () => {
